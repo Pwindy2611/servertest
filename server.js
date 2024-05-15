@@ -1,25 +1,25 @@
-const express =require('express');
-const cors=require('cors');
-const dotenv=require('dotenv');
-const mongoose=require('mongoose');
-const cookieParser=require('cookie-parser');
-const authRouter=require('./routes/auth');
-const userRouter=require('./routes/user');
+import express, { json } from 'express';
+import cors from 'cors';
+import { config } from 'dotenv';
+import { set, connect } from 'mongoose';
+import cookieParser from 'cookie-parser';
+import authRouter from './routes/auth.js';
+import userRouter from './routes/user.js';
 
-dotenv.config();
+config();
 const app=express();
 
-mongoose.set('strictQuery', false);
+set('strictQuery', false);
 
-mongoose.connect('mongodb://127.0.0.1:27017').then(() => {
+connect('mongodb://127.0.0.1:27017').then(() => {
   console.log(`successfully connected`);
 }).catch((e) => {
-  console.log(`not connected`);
+  console.log(`not connected`);const router = express.Router();
 }); 
 
 app.use(cors());
 app.use(cookieParser());
-app.use(express.json());
+app.use(json());
 
 //ROUTES
 app.use("/v1/auth",authRouter);
