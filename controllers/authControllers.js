@@ -24,6 +24,7 @@ const authController = {
             console.log(err);
         }
     },
+    
     //GENERATE ACCESS TOKEN
     generateToken: (user,time,key) => {
         return jwt.sign({
@@ -81,13 +82,13 @@ const authController = {
             }
             // Fetch user from the database to get complete user info
             try {
-                const dbUser = await User.findById(user.id);
-                if (!dbUser) {
+                req.user = user;
+                if (!user) {
                     return res.status(404).json({ msg: "User not found" });
                 }
                 refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-                const newAccessToken = authController.generateToken(dbUser, "30s", process.env.JWT_ACCESS_KEY);
-                const newRefreshToken = authController.generateToken(dbUser, "365d", process.env.JWT_REFRESH_TOKEN);
+                const newAccessToken = authController.generateToken(user, "30s", process.env.JWT_ACCESS_KEY);
+                const newRefreshToken = authController.generateToken(user, "365d", process.env.JWT_REFRESH_TOKEN);
                 refreshTokens.push(newRefreshToken);
                 res.cookie("refreshToken", newRefreshToken, {
                     httpOnly: true,
