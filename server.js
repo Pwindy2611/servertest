@@ -21,6 +21,17 @@ app.use(cors());
 app.use(cookieParser());
 app.use(json());
 
+app.post('localhost:8000/v1/auth/refresh', (req, res) => {
+  console.log('Cookies:', req.cookies);
+  console.log('Body:', req.body);
+  res.send('Received');
+});
+
+app.use((req, res, next) => {
+  console.log('Cookies:', req.cookies);
+  next();
+});
+
 //ROUTES
 app.use("/v1/auth",authRouter);
 app.use("/v1/user",userRouter);

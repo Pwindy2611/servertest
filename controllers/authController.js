@@ -18,7 +18,7 @@ const authController = {
                 password:  hashedPassword
             });
             const user = await newUser.save();
-            res.status(201).json(user);
+            return res.status(201).json(user);
         }
         catch(err){
             console.log(err);
@@ -41,11 +41,11 @@ const authController = {
         try{
             const user = await User.findOne({username:req.body.username});//tim user name trong database
             if(!user){
-                return res.status(404).json({msg:"User not found"});
+                return res.status(404).json("User not found");
             }
             const validPassword = await compare(req.body.password,user.password);
             if(!validPassword) {
-                return res.status(400).json({msg:"Invalid credentials"});
+                return res.status(400).json("Invalid credentials");
             }
             if((user && validPassword)) {
             const accessToken= authController.generateToken(user,"30s",process.env.JWT_ACCESS_KEY);
@@ -58,11 +58,11 @@ const authController = {
                 secure:false,
             });
             const{password,...others}=user._doc;
-            res.status(200).json({...others,accessToken}); 
+            return res.status(200).json({...others,accessToken}); 
             }
         }
         catch(err){
-            res.status(500).json(err);
+            return res.status(500).json(err);
             console.log(err)
         }
     },
@@ -70,21 +70,22 @@ const authController = {
     //REFRESH TOKEN
     requestRefreshToken: async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
+        console.log(refreshToken);
         if (!refreshToken) {
-            return res.status(401).json({ msg: "Unauthorized" });
+            return res.status(401).json("Unauthorized");
         }
         if (!refreshTokens.includes(refreshToken)) {
-            return res.status(403).json({ msg: "Refresh token is not valid!" });
+            return res.status(403).json( "Refresh token is not valid!" );
         }
         jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN, async (err, user) => {
             if (err) {
                 console.log("Token verification error:", err);
-                return res.status(403).json({ msg: "Token is not valid" });
+                return res.status(403).json("Token is not valid");
             }
             // Fetch user from the database to get complete user info
             try {
                 if (!user) {
-                    return res.status(404).json({ msg: "User not found" });
+                    return res.status(404).json("User not found" );
                 }
                 refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
                 const newAccessToken = authController.generateToken(user,"30s",process.env.JWT_ACCESS_KEY);
@@ -96,10 +97,10 @@ const authController = {
                     sameSite: "strict",
                     secure: false,
                 });
-                res.status(200).json({ accessToken: newAccessToken });
+                return res.status(200).json({ accessToken: newAccessToken });
             } catch (error) {
                 console.log("Database fetch error:", error);
-                res.status(500).json({ msg: "Internal server error" });
+                return res.status(500).json("Internal server error");
             }
         });
     },
@@ -108,11 +109,11 @@ const authController = {
     logoutUser: async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
-            return res.status(401).json({ msg: "Unauthorized" });
+            return res.status(401).json("Unauthorized");
         }
         refreshTokens = refreshTokens.filter((token) => token!== refreshToken);
         res.clearCookie("refreshToken", { path: "/" });
-        res.status(200).json({ msg: "Logged out successfully" });
+       return res.status(200).json("Logged out successfully");
     },
 }
 export default authController;

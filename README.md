@@ -13,3 +13,7 @@
 * 2 http only cookies
 * 3 redux storage -> access token and http only cookies ->refresh token
 * 4 BFF patterns -> backend for frontend( fake server)
+# Redux toolkit
+# Axios + navigate
+# Bcrypt(hash)
+
