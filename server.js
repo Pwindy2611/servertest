@@ -17,18 +17,19 @@ connect('mongodb://127.0.0.1:27017').then(() => {
   console.log(`not connected`);const router = express.Router();
 }); 
 
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin:(_,callback)=>callback(null,true),
+  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH','OPTIONS'],
+  optionsSuccessStatus:200,
+}));
+
 app.use(cookieParser());
 app.use(json());
 
-app.post('localhost:8000/v1/auth/refresh', (req, res) => {
-  console.log('Cookies:', req.cookies);
-  console.log('Body:', req.body);
-  res.send('Received');
-});
-
 app.use((req, res, next) => {
-  console.log('Cookies:', req.cookies);
+  console.log(`Received ${req.method} request to ${req.url}`);
+  console.log('Request Headers:', req.headers); // In ra tất cả các tiêu đề của yêu cầu
   next();
 });
 

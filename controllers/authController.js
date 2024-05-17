@@ -70,7 +70,6 @@ const authController = {
     //REFRESH TOKEN
     requestRefreshToken: async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
-        console.log(refreshToken);
         if (!refreshToken) {
             return res.status(401).json("Unauthorized");
         }
@@ -107,13 +106,11 @@ const authController = {
 
     //LOGOUT
     logoutUser: async (req, res) => {
-        const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
-            return res.status(401).json("Unauthorized");
-        }
-        refreshTokens = refreshTokens.filter((token) => token!== refreshToken);
-        res.clearCookie("refreshToken", { path: "/" });
-       return res.status(200).json("Logged out successfully");
-    },
+        res.clearCookie("refreshToken");
+        refreshTokens = refreshTokens.filter(
+          (token) => token !== req.cookies.refreshToken
+        );
+        res.status(200).json("Logged out !");
+      },
 }
 export default authController;
