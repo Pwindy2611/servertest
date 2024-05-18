@@ -8,10 +8,11 @@ import userRouter from './routes/user.js';
 
 config();
 const app=express();
-
+const URL = process.env.DB_URL
+ 
 set('strictQuery', false);
 
-connect('mongodb://127.0.0.1:27017').then(() => {
+connect(URL).then(() => {
   console.log(`successfully connected`);
 }).catch((e) => {
   console.log(`not connected`);const router = express.Router();
