@@ -12,10 +12,10 @@ const authController = {
             const hashedPassword = await hash(req.body.password,salt);
 
             //Create new user
-            const newUser = await new User({
+            const newUser = new User({
                 username: req.body.username,
                 email: req.body.email,
-                password:  hashedPassword
+                password: hashedPassword
             });
             const user = await newUser.save();
             return res.status(201).json(user);
@@ -39,17 +39,17 @@ const authController = {
     //LOGIN
     loginUser: async(req,res)=>{
         try{
-            const user = await User.findOne({username:req.body.username});//tim user name trong database
-            if(!user){
-                return res.status(404).json("User not found");
+            const userEmail = await User.findOne({email:req.body.email});//tim emailtrong database
+            if(!userEmail){
+                return res.status(404).json("Can't find your email!");
             }
-            const validPassword = await compare(req.body.password,user.password);
+            const validPassword = await compare(req.body.password,userEmail.password);
             if(!validPassword) {
-                return res.status(400).json("Invalid credentials");
+                return res.status(400).json("The password is incorrect!");
             }
-            if((user && validPassword)) {
-            const accessToken= authController.generateToken(user,"30s",process.env.JWT_ACCESS_KEY);
-            const refreshToken = authController.generateToken(user,"365d",process.env.JWT_REFRESH_TOKEN);
+            if((userEmail && validPassword)) {
+            const accessToken= authController.generateToken(userEmail,"1d",process.env.JWT_ACCESS_KEY);
+            const refreshToken = authController.generateToken(userEmail,"365d",process.env.JWT_REFRESH_TOKEN);
             refreshTokens.push(refreshToken);
             res.cookie("refreshToken",refreshToken,{
                 httpOnly:true,
@@ -57,13 +57,12 @@ const authController = {
                 sameSite:"strict",
                 secure:false,
             });
-            const{password,...others}=user._doc;
-            return res.status(200).json({...others,accessToken}); 
+            const{password,...others}=userEmail._doc;
+            return res.status(200).json({...others,accessToken}); //khong res password
             }
         }
         catch(err){
             return res.status(500).json(err);
-            console.log(err)
         }
     },
 

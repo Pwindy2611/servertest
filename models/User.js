@@ -6,7 +6,6 @@ const userSchema =new Schema({
         required:true,// bat buoc phai co
         minlength:6,
         maxlength:20,
-        unique:true // username ton tai duy nhat
     },
     email:{
         type:String,
