@@ -10,14 +10,14 @@ const userSchema =new Schema({
     email:{
         type:String,
         required:true,// bat buoc phai co
-        minlength:10,
+        minlength:1,
         maxlength:50,
         unique:true // username ton tai duy nhat
     },
     password:{
         type:String,
         required:true,// bat buoc phai co
-        minlength:10,
+        minlength:8,
     },
     admin:{
         type:Boolean,
