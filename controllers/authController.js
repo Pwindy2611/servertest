@@ -15,6 +15,7 @@ const authController = {
             const newUser = new User({
                 username: req.body.username,
                 email: req.body.email,
+                phone: req.body.phone,
                 password: hashedPassword
             });
             const user = await newUser.save();
@@ -29,6 +30,8 @@ const authController = {
     generateToken: (user,time,key) => {
         return jwt.sign({
             id: user.id,
+            email:user.email,
+            phone:user.phone,
             admin:user.admin,
         },
         key,

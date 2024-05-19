@@ -19,6 +19,13 @@ const userSchema =new Schema({
         required:true,// bat buoc phai co
         minlength:8,
     },
+    phone:{
+        type:Number,
+        required:true,
+        minlength:9,
+        maxlength:12,
+        unique:true
+    },
     admin:{
         type:Boolean,
         default:false //gia tri mac dinh cho cac user ko phai admin
